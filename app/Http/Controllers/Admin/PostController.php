@@ -5,6 +5,8 @@ use App\Http\Controllers\Controller;
 
 
 use App\Models\Post;
+use App\Models\Tag;
+
 use App\Models\Category;
 
 use Illuminate\Http\Request;
@@ -35,8 +37,10 @@ class PostController extends Controller
      */
     public function create()
     {
+        //get all tags
+        $tags = Tag::all();
         $categories = Category::all();
-        return view ('admin.posts.create', compact('categories'));
+        return view ('admin.posts.create', compact('categories', 'tags'));
         
     }
 
@@ -48,7 +52,7 @@ class PostController extends Controller
      */
     public function store(PostRequest $request)
     {
-        //  dd($request->all());
+        //dd($request->all());
         $val_data = $request->validated();
 
         //Generate the slug
@@ -59,7 +63,10 @@ class PostController extends Controller
         $val_data['slug'] = $slug;
         //dd($val_data);
         //redirect to a get route
-        Post::create($val_data);
+        $new_post = Post::create($val_data);
+
+        $new_post->tags()->attach($request->tags);
+
 
         return redirect()->route('admin.posts.index')->with('success', 'Post Created Successfully');
     }
@@ -72,7 +79,8 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        return view('admin.posts.show', compact('post'));
+        $tags = Tag::all();
+        return view('admin.posts.show', compact('post', 'tags'));
 
     }
 
@@ -85,7 +93,8 @@ class PostController extends Controller
     public function edit(Post $post)
     {
         $categories = Category::all();
-        return view('admin.posts.edit', compact('post', 'categories'));
+        $tags = Tag::all();
+        return view('admin.posts.edit', compact('post', 'categories', 'tags'));
         
     }
 
@@ -104,6 +113,7 @@ class PostController extends Controller
             'title' => ['required', 'max:150'],
             'cover_image' => ['nullable'],
             'category_id' => ['nullable', 'exists:categories,id'],
+            'tags' => ['nullable', 'exists:tags,id'],
             'content' => ['nullable']
 
         ]);
@@ -115,6 +125,7 @@ class PostController extends Controller
         $val_data['slug'] = $slug;
 
         $post->update($val_data);
+        $post->tags()->sync($request->tags);
 
         return redirect()->route('admin.posts.index')->with('success', 'Post Updated Successfully');
     }

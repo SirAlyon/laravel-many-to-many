@@ -27,6 +27,19 @@
         </select>
         <small id="categoryHelp" class="form-text text-muted my-3">Select post's category</small>
 
+        <div class="form-group">
+            <label for="tags">Tags</label>
+            <select multiple class="form-control" name="tags[]" id="tags">
+                @if($tags)
+                    @foreach($tags as $tag)
+                        <option value="{{$tag->id}}">{{$tag->name}}</option>
+                    @endforeach
+                @endif
+            </select>
+        </div>
+            @error('tags')
+                <div class="alert alert-danger">{{ $message }}</div>
+            @enderror
 
         <div class="form-group my-3">
             <label for="content">Content</label>

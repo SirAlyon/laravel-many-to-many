@@ -28,6 +28,7 @@ class PostRequest extends FormRequest
             'title' => ['required', 'unique:posts', 'max:150'],
             'cover_image' => ['nullable'],
             'content' => ['nullable'],
+            'tags'=> ['nullable', 'exists:tags,id'],
             'category_id' => ['nullable', 'exists:categories,id']
 
         

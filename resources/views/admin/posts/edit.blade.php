@@ -27,13 +27,26 @@
 
         <label for="category_id">Category</label>
         <select class="form-select @error('category_id') is-invalid @enderror" aria-label="Default select example" name="category_id" id="category_id">
-            <option selected>Choose Category...</option>
+            <option value="" selected>Choose Category...</option>
             @foreach ($categories as $category)
               <option value="{{$category->id}}" @if ($post->category_id == $category->id) selected="selected" @endif>{{$category->name}}</option>  
             @endforeach
         </select>
         <small id="category_idHelp" class="form-text text-muted my-3">Select post's category</small>
 
+        <div class="form-group">
+            <label for="tags">Tags</label>
+            <select multiple class="form-control" name="tags[]" id="tags">
+                @if($tags)
+                    @foreach($tags as $tag)
+                        <option value="{{$tag->id}}" {{$post->tags->contains($tag) ? 'selected' : ''}}>{{$tag->name}}</option>
+                    @endforeach
+                @endif
+            </select>
+        </div>
+            @error('tags')
+                <div class="alert alert-danger">{{ $message }}</div>
+            @enderror
 
         <div class="form-group mb-4">
             <label for="content">Content</label>
