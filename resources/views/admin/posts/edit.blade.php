@@ -5,7 +5,7 @@
     @include('partials.error')
 
 
-    <form action="{{route('admin.posts.update', $post->id)}}" method="post">
+    <form action="{{route('admin.posts.update', $post->id)}}" method="post" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="form-group mb-4">
@@ -17,36 +17,23 @@
         <div class="d-flex mb-4">
             <div class="form-group">
                 <label for="cover_image">Cover Image</label>
-                <input type="text" class="form-control @error('cover_image') is-invalid @enderror" id="cover_image" name="cover_image" aria-describedby="cover_imageHelp" value="{{$post->cover_image}}">
+                <input type="file" class="form-control @error('cover_image') is-invalid @enderror" id="cover_image" name="cover_image" aria-describedby="cover_imageHelp">
                 <small id="cover_imageHelp" class="form-text text-muted">Type the cover image link</small>
             </div>
             <div class="media mx-4">
-                <img width="150" class="shadow" src="{{$post->cover_image}}" alt="{{$post->title}}">
+                <img width="150" class="shadow" src="{{asset('storage/' . $post->cover_image)}}" alt="{{$post->title}}">
             </div>
         </div>
 
         <label for="category_id">Category</label>
         <select class="form-select @error('category_id') is-invalid @enderror" aria-label="Default select example" name="category_id" id="category_id">
-            <option value="" selected>Choose Category...</option>
+            <option selected>Choose Category...</option>
             @foreach ($categories as $category)
               <option value="{{$category->id}}" @if ($post->category_id == $category->id) selected="selected" @endif>{{$category->name}}</option>  
             @endforeach
         </select>
         <small id="category_idHelp" class="form-text text-muted my-3">Select post's category</small>
 
-        <div class="form-group">
-            <label for="tags">Tags</label>
-            <select multiple class="form-control" name="tags[]" id="tags">
-                @if($tags)
-                    @foreach($tags as $tag)
-                        <option value="{{$tag->id}}" {{$post->tags->contains($tag) ? 'selected' : ''}}>{{$tag->name}}</option>
-                    @endforeach
-                @endif
-            </select>
-        </div>
-            @error('tags')
-                <div class="alert alert-danger">{{ $message }}</div>
-            @enderror
 
         <div class="form-group mb-4">
             <label for="content">Content</label>

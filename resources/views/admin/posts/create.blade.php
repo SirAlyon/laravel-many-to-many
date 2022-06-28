@@ -4,7 +4,7 @@
     <h2>Create a new Post</h2> 
     @include('partials.error')
 
-    <form action="{{route('admin.posts.store')}}" method="post">
+    <form action="{{route('admin.posts.store')}}" method="post" enctype="multipart/form-data">
         @csrf
         <div class="form-group my-3">
             <label for="title">Title</label>
@@ -14,7 +14,7 @@
 
         <div class="form-group my-3">
             <label for="cover_image">Cover Image</label>
-            <input type="text" class="form-control @error('cover_image') is-invalid @enderror" id="cover_image" name="cover_image" aria-describedby="cover_imageHelp" value="{{old('cover_image')}}">
+            <input type="file" class="form-control @error('cover_image') is-invalid @enderror" id="cover_image" name="cover_image" aria-describedby="cover_imageHelp">
             <small id="cover_imageHelp" class="form-text text-muted">Type the cover image link</small>
         </div>
 
@@ -27,19 +27,6 @@
         </select>
         <small id="categoryHelp" class="form-text text-muted my-3">Select post's category</small>
 
-        <div class="form-group">
-            <label for="tags">Tags</label>
-            <select multiple class="form-control" name="tags[]" id="tags">
-                @if($tags)
-                    @foreach($tags as $tag)
-                        <option value="{{$tag->id}}">{{$tag->name}}</option>
-                    @endforeach
-                @endif
-            </select>
-        </div>
-            @error('tags')
-                <div class="alert alert-danger">{{ $message }}</div>
-            @enderror
 
         <div class="form-group my-3">
             <label for="content">Content</label>
